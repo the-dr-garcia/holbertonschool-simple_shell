@@ -1,6 +1,21 @@
 #include "shell.h"
 
 /**
+ * trim_whitespace - Removes trailing whitespace and newlines from a string
+ * @str: The string to trim
+ */
+void trim_whitespace(char *str)
+{
+	int i = strlen(str) - 1;
+
+	while (i >= 0 && (str[i] == '\n' || str[i] == '\r' || str[i] == ' ' || str[i] == '\t'))
+	{
+		str[i] = '\0';
+		i--;
+	}
+}
+
+/**
  * main - Entry point for the simple shell
  * @argc: Argument count
  * @argv: Argument vector
@@ -29,8 +44,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		if (read_chars > 0 && line[read_chars - 1] == '\n')
-			line[read_chars - 1] = '\0';
+		trim_whitespace(line);
 
 		if (strlen(line) == 0)
 			continue;
