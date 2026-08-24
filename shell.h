@@ -26,5 +26,6 @@ extern char **environ;
 
 int execute_command(char **args, char **argv);
 char *get_location(char *command);
+void print_env(void);
 
 #endif /* SHELL_H */

@@ -21,6 +21,19 @@ char *trim_whitespace(char *str)
 	return (str);
 }
 /**
+ * print_env - Prints the current environment
+ */
+void print_env(void)
+{
+	int i;
+
+	for (i = 0; environ[i]; i++)
+	{
+		write(STDOUT_FILENO, environ[i], strlen(environ[i]));
+		write(STDOUT_FILENO, "\n", 1);
+	}
+}
+/**
  * main - Entry point for the simple shell
  * @argc: Argument count
  * @argv: Argument vector
@@ -69,6 +82,12 @@ int main(int argc, char **argv)
 			free(line);
 			line = NULL;
 			exit(last_status);
+		}
+		if (strcmp(args[0], "env") == 0)
+		{
+			print_env();
+			last_status = 0;
+			continue;
 		}
 		last_status = execute_command(args, argv);
 	}
