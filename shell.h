@@ -24,6 +24,6 @@ typedef struct list_s
 
 extern char **environ;
 
-void execute_command(char *cmd, char **argv);
+void execute_command(char **args, char **argv);
 
 #endif /* SHELL_H */

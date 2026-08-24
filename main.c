@@ -40,6 +40,9 @@ int main(int argc, char **argv)
 	size_t len = 0;
 	ssize_t read_chars;
 	int interactive = isatty(STDIN_FILENO);
+	char *args[64];
+	char *token;
+	int i;
 	(void)argc;
 
 	while (1)
@@ -61,13 +64,25 @@ int main(int argc, char **argv)
 		if (strlen(clean_line) == 0)
 			continue;
 
-		if (strcmp(clean_line, "exit") == 0)
+		i = 0;
+		token = strtok(clean_line, " \t\n");
+		while (token != NULL && i < 63)
+		{
+			args[i++] = token;
+			token = strtok(NULL, " \t\n");
+		}
+		args[i] = NULL;
+
+		if (args[0] == NULL)
+			continue;
+
+		if (strcmp(args[0], "exit") == 0)
 		{
 			free(line);
 			break;
 		}
 
-		execute_command(clean_line, argv);
+		execute_command(args, argv);
 	}
 
 	return (0);
