@@ -1,0 +1,20 @@
+.TH HSH 1 "August 2026" "Holberton" "User Commands"
+.SH NAME
+hsh \- a simple command line interpreter / shell
+.SH SYNOPSIS
+.B hsh
+.SH DESCRIPTION
+.B hsh
+is a simple UNIX command interpreter that executes commands read from standard input or from a file.
+.SH INVOCATION
+.B hsh
+can be invoked interactively or non-interactively.
+.P
+In interactive mode, a prompt `($)` is displayed before reading commands.
+.SH EXIT STATUS
+.B hsh
+returns the exit status of the last command executed.
+.SH SEE ALSO
+sh(1)
+.SH AUTHORS
+Written by Your Name and Collaborator Name.
