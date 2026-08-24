@@ -30,7 +30,7 @@ char *_getenv(const char *name)
  * get_location - Locates the full path of a command
  * @command: The command name to find
  *
- * Return: Malloc'ed full path string, or copy of command if path fails/absolute
+ * Return: Malloc'ed full path string, or NULL if not found / shouldn't fork
  */
 char *get_location(char *command)
 {
@@ -41,11 +41,15 @@ char *get_location(char *command)
 	if (!command)
 		return (NULL);
 
-	if (stat(command, &st) == 0)
-		return (strdup(command));
+	if (strchr(command, '/'))
+	{
+		if (stat(command, &st) == 0)
+			return (strdup(command));
+		return (NULL);
+	}
 
 	path_env = _getenv("PATH");
-	if (!path_env)
+	if (!path_env || path_env[0] == '\0')
 		return (NULL);
 
 	path_copy = strdup(path_env);
@@ -57,6 +61,17 @@ char *get_location(char *command)
 
 	while (token != NULL)
 	{
+		if (token[0] == '\0')
+		{
+			if (stat(command, &st) == 0)
+			{
+				free(path_copy);
+				return (strdup(command));
+			}
+			token = strtok(NULL, ":");
+			continue;
+		}
+
 		dir_len = strlen(token);
 		file_path = malloc(command_len + dir_len + 2);
 		if (!file_path)
