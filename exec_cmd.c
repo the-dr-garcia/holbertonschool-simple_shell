@@ -11,22 +11,32 @@ void execute_command(char **args, char **argv)
 {
 	pid_t pid;
 	int status;
+	char *full_path;
 
 	if (args == NULL || args[0] == NULL)
 		return;
+
+	full_path = get_location(args[0]);
+	if (full_path == NULL)
+	{
+		fprintf(stderr, "%s: 1: %s: not found\n", argv[0], args[0]);
+		return;
+	}
 
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("Error forking");
+		free(full_path);
 		return;
 	}
 
 	if (pid == 0)
 	{
-		if (execve(args[0], args, environ) == -1)
+		if (execve(full_path, args, environ) == -1)
 		{
 			fprintf(stderr, "%s: 1: %s: not found\n", argv[0], args[0]);
+			free(full_path);
 			exit(127);
 		}
 	}
@@ -34,4 +44,6 @@ void execute_command(char **args, char **argv)
 	{
 		wait(&status);
 	}
+
+	free(full_path);
 }
