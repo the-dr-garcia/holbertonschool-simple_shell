@@ -31,7 +31,7 @@ char *trim_whitespace(char *str)
  * @argc: Argument count
  * @argv: Argument vector
  *
- * Return: Always 0 on success
+ * Return: Last exit status
  */
 int main(int argc, char **argv)
 {
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
 	int interactive = isatty(STDIN_FILENO);
 	char *args[64];
 	char *token;
-	int i;
+	int i, last_status = 0;
 	(void)argc;
 
 	while (1)
@@ -79,11 +79,12 @@ int main(int argc, char **argv)
 		if (strcmp(args[0], "exit") == 0)
 		{
 			free(line);
-			break;
+			exit(last_status);
 		}
 
-		execute_command(args, argv);
+		last_status = execute_command(args, argv);
 	}
 
-	return (0);
+	free(line);
+	return (last_status);
 }

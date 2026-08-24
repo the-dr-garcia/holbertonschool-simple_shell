@@ -5,22 +5,22 @@
  * @args: Array of arguments (tokens)
  * @argv: Argument vector from main (for program name in errors)
  *
- * Return: Nothing
+ * Return: Exit status of the command
  */
-void execute_command(char **args, char **argv)
+int execute_command(char **args, char **argv)
 {
 	pid_t pid;
-	int status;
+	int status = 0;
 	char *full_path;
 
 	if (args == NULL || args[0] == NULL)
-		return;
+		return (0);
 
 	full_path = get_location(args[0]);
 	if (full_path == NULL)
 	{
 		fprintf(stderr, "%s: 1: %s: not found\n", argv[0], args[0]);
-		return;
+		return (127);
 	}
 
 	pid = fork();
@@ -28,7 +28,7 @@ void execute_command(char **args, char **argv)
 	{
 		perror("Error forking");
 		free(full_path);
-		return;
+		return (1);
 	}
 
 	if (pid == 0)
@@ -43,7 +43,10 @@ void execute_command(char **args, char **argv)
 	else
 	{
 		wait(&status);
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
 	}
 
 	free(full_path);
+	return (status);
 }
